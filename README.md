@@ -772,7 +772,7 @@ The UTC time is 8:26:11
 
 ### Debug
 
-Debug is enabled by default on Serial. Debug Level from 0 to 4. To disable, change the _WIFI_LOGLEVEL_ and _WIFININA_LOGLEVEL_ to 0
+Debug is enabled by default on Serial. Debug Level from 0 to 4. To disable, change the _WIFI_LOGLEVEL_ to 0
 
 ```cpp
 // Use this to output debug msgs to Serial
