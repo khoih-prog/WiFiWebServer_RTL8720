@@ -1,8 +1,8 @@
 /****************************************************************************************************************************
   defines.h
-  For RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields
+  For RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields
 
-  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields to run WebServer
+  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields to run WebServer
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
@@ -12,7 +12,7 @@
 #define defines_h
 
 #if !defined(CONFIG_PLATFORM_8721D)
-  #error Only for Ameba Realtek RTL8720DN, RTL8722DM and RTM8722CSM platform.
+  #error Only for Ameba Realtek RTL8720DN, RTL8722DM and RTL8722CSM platform.
 #endif
 
 #define DEBUG_WIFI_WEBSERVER_PORT   Serial

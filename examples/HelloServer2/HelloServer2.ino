@@ -1,8 +1,8 @@
 /****************************************************************************************************************************
   HelloServer2.ino - Simple Arduino web server sample
-  For RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields
+  For RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields
 
-  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields to run WebServer
+  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields to run WebServer
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license

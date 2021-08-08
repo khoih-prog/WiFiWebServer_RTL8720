@@ -1,6 +1,6 @@
 {
   "name": "WiFiWebServer_RTL8720",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": "wifi, wi-fi, WebServer, RTL8720DN, RTL8722DM, RTM8722CSM, realtek, amebad-core, HTTP-Client, WebSocket-Client, server, client, websocket, mqtt, mqtt-client, thingstream",
   "description": "Simple WiFiWebServer, HTTP Client, MQTT and WebSocket Client library for Realtek RTL8720DN, RTL8722DM, RTM8722CSM boards using WiFi. Supporting WiFi at 2.4GHz and 5GHz",
   "authors":

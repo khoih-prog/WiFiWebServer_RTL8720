@@ -15,6 +15,7 @@
   * [Features](#features)
   * [Currently Supported Boards](#currently-supported-boards)
 * [Changelog](#changelog)
+  * [Releases v1.0.1](#releases-v101)
   * [Initial Releases v1.0.0](#initial-releases-v100)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
@@ -87,7 +88,7 @@
 
 #### Features
 
-This [WiFiWebServer_RTL8720 library](https://github.com/khoih-prog/WiFiWebServer_RTL8720) is a simple yet complete WebServer library for **Realtek RTL8720DN, RTL8722DM and RTM8722CSM boards**. 
+This [WiFiWebServer_RTL8720 library](https://github.com/khoih-prog/WiFiWebServer_RTL8720) is a simple yet complete WebServer library for **Realtek RTL8720DN, RTL8722DM and RTL8722CSM boards**. 
 
 The functions are similar and compatible to those of [`ESP32 WebServer`](https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer) and [`ESP8266WebServer`](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WebServer) libraries to make life much easier to port sketches from ESP8266/ESP32.
 
@@ -116,7 +117,7 @@ The `WiFiWebServer` class found in `WiFiWebServer_RTL8720.h` header, is a simple
 
 This [**WiFiWebServer_RTL8720 library**](https://github.com/khoih-prog/WiFiWebServer_RTL8720) currently supports these following boards:
 
-1. Realtek **RTL8720DN, RTL8722DM and RTM8722CSM**
+1. Realtek **RTL8720DN, RTL8722DM and RTL8722CSM**
 
 
 ---
@@ -124,10 +125,14 @@ This [**WiFiWebServer_RTL8720 library**](https://github.com/khoih-prog/WiFiWebSe
 
 ## Changelog
 
+#### Releases v1.0.1
+
+1. Fix typo
+
 
 #### Initial Releases v1.0.0
 
-This is simple yet complete WebServer library for `Realtek RTL8720DN, RTL8722DM and RTM8722CSM` boards. **The functions are similar and compatible to ESP8266/ESP32 WebServer libraries** to make life much easier to port sketches from ESP8266/ESP32.
+1. Initial Release to support `Realtek RTL8720DN, RTL8722DM and RTL8722CSM` boards.
 
 ---
 
@@ -137,7 +142,7 @@ This is simple yet complete WebServer library for `Realtek RTL8720DN, RTL8722DM 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino AmebaD core 3.0.8+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTM8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
+ 2. [`Arduino AmebaD core 3.0.8+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
 
  3. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
@@ -534,7 +539,7 @@ void loop(void)
 #define defines_h
 
 #if !defined(CONFIG_PLATFORM_8721D)
-  #error Only for Ameba Realtek RTL8720DN, RTL8722DM and RTM8722CSM platform.
+  #error Only for Ameba Realtek RTL8720DN, RTL8722DM and RTL8722CSM platform.
 #endif
 
 #define DEBUG_WIFI_WEBSERVER_PORT   Serial
@@ -580,7 +585,7 @@ The following are debug terminal output and screen shot when running example [**
 ```
 
 Starting AdvancedServer on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 HTTP server started @ 192.168.2.152
@@ -595,7 +600,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WebClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -666,7 +671,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting ScanNetworks on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -696,7 +701,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting MQTTClient_Auth on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -716,7 +721,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Start MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -746,7 +751,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WiFiUdpNTPClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.0
+WiFiWebServer_RTL8720 v1.0.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -795,16 +800,21 @@ If you get compilation errors, more often than not, you may need to install a ne
 
 ## Releases
 
+#### Releases v1.0.1
+
+1. Fix typo
+
+
 #### Initial Releases v1.0.0
 
-This is simple yet complete WebServer library for `Realtek RTL8720DN, RTL8722DM and RTM8722CSM` boards. **The functions are similar and compatible to ESP8266/ESP32 WebServer libraries** to make life much easier to port sketches from ESP8266/ESP32.
+1. Initial Release to support `Realtek RTL8720DN, RTL8722DM and RTL8722CSM` boards.
 
 ---
 ---
 
 This [WiFiWebServer_RTL8720 library](https://github.com/khoih-prog/WiFiWebServer_RTL8720) currently supports these following boards:
 
-1. Realtek **RTL8720DN, RTL8722DM and RTM8722CSM**
+1. Realtek **RTL8720DN, RTL8722DM and RTL8722CSM**
 
 ---
 
@@ -833,7 +843,7 @@ Submit issues to: [WiFiWebServer_RTL8720 issues](https://github.com/khoih-prog/W
 
 ### DONE
 
- 1. Add support to Realtek RTL8720DN, RTL8722DM and RTM8722CSM
+ 1. Add support to Realtek RTL8720DN, RTL8722DM and RTL8722CSM
  2. Add **High-level HTTP (GET, POST, PUT, PATCH, DELETE) and WebSocket Client**
 
 

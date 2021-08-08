@@ -1,17 +1,18 @@
 /**************************************************************************************************************************************
   WiFiWebServer_RTL8720.h - Dead simple web-server.
-  For RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields
+  For RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields
 
-  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields to run WebServer
+  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields to run WebServer
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.0
+  Version: 1.0.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
-  1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTM8722CSM
+  1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
+  1.0.1   K Hoang      07/08/2021 Fix version typo
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -19,13 +20,13 @@
 #ifndef WiFiWebServer_RTL8720_h
 #define WiFiWebServer_RTL8720_h
 
-#define WIFI_WEBSERVER_RTL8720_VERSION          "WiFiWebServer_RTL8720 v1.0.0"
+#define WIFI_WEBSERVER_RTL8720_VERSION          "WiFiWebServer_RTL8720 v1.0.1"
 
 #define WIFI_WEBSERVER_RTL8720_VERSION_MAJOR    1
-#define WIFI_WEBSERVER_RTL8720_VERSION_MAJOR    0
-#define WIFI_WEBSERVER_RTL8720_VERSION_MAJOR    0
+#define WIFI_WEBSERVER_RTL8720_VERSION_MINOR    0
+#define WIFI_WEBSERVER_RTL8720_VERSION_PATCH    1
 
-#define WEBSOCKETS2_GENERIC_VERSION_INT         1000000
+#define WIFI_WEBSERVER_RTL8720_VERSION_IN       1000001
 
 #define USE_NEW_WEBSERVER_VERSION     true
 

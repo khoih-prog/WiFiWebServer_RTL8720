@@ -1,9 +1,9 @@
 /****************************************************************************************************************************
   MQTTClient_Auth.ino - Dead simple MQTT Client
   
-  For RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields
+  For RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields
 
-  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTM8722CSM WiFi shields to run WebServer
+  WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields to run WebServer
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
@@ -142,7 +142,7 @@ void setup()
   // client.setBufferSize(255);
 }
 
-#define MQTT_PUBLISH_INTERVAL_MS       5000L
+#define MQTT_PUBLISH_INTERVAL_MS       60000L
 
 String data         = "Hello from MQTTClient_Auth on " + String(BOARD_NAME) + " with " + String(SHIELD_TYPE);
 const char *pubData = data.c_str();
