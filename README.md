@@ -14,9 +14,7 @@
 * [Why do we need this WiFiWebServer_RTL8720 library](#why-do-we-need-this-wifiwebserver_rtl8720-library)
   * [Features](#features)
   * [Currently Supported Boards](#currently-supported-boards)
-* [Changelog](#changelog)
-  * [Releases v1.0.1](#releases-v101)
-  * [Initial Releases v1.0.0](#initial-releases-v100)
+* [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [Use Arduino Library Manager](#use-arduino-library-manager)
@@ -72,7 +70,6 @@
   * [6. WiFiUdpNTPClient on Rtlduino RTL8720DN](#6-wifiudpntpclient-on-rtlduino-rtl8720dn)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -119,31 +116,13 @@ This [**WiFiWebServer_RTL8720 library**](https://github.com/khoih-prog/WiFiWebSe
 
 1. Realtek **RTL8720DN, RTL8722DM and RTL8722CSM**
 
-
----
----
-
-## Changelog
-
-#### Releases v1.0.1
-
-1. Fix typo
-
-
-#### Initial Releases v1.0.0
-
-1. Initial Release to support `Realtek RTL8720DN, RTL8722DM and RTL8722CSM` boards.
-
----
-
 ---
 ---
 
 ## Prerequisites
 
- 1. [`Arduino IDE 1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino AmebaD core 3.0.8+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
-
+ 1. [`Arduino IDE 1.8.19+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 2. [`Arduino AmebaD core 3.1.1+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
  3. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
 
@@ -391,7 +370,7 @@ const int led = 13;
 
 void handleRoot()
 {
-#define BUFFER_SIZE     500
+#define BUFFER_SIZE     512
 
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
@@ -448,30 +427,54 @@ void handleNotFound()
   digitalWrite(led, 0);
 }
 
+#define ORIGINAL_STR_LEN        2048
+
 void drawGraph()
 {
-  String out;
-  out.reserve(3000);
-  char temp[70];
+  static String out;
+  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
 
-  out += F("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n");
-  out += F("<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n");
-  out += F("<g stroke=\"blue\">\n");
+  if (out.length() == 0)
+  {
+    WS_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
+    out.reserve(ORIGINAL_STR_LEN);
+  }
+
+  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
+           "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
+           "<g stroke=\"blue\">\n");
+
+  char temp[70];
+  
   int y = rand() % 130;
 
   for (int x = 10; x < 300; x += 10)
   {
-    int y2 = ( rand() ) % 130;
+    int y2 = rand() % 130;
     sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
     out += temp;
     y = y2;
   }
+  
   out += F("</g>\n</svg>\n");
 
-  server.send(200, F("image/svg+xml"), out);
+  WS_LOGDEBUG1(F("String Len = "), out.length());
+
+  if (out.length() > previousStrLen)
+  {
+    WS_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
+
+    previousStrLen = out.length() + 48;
+    
+    out.reserve(previousStrLen);
+  }
+  else
+  {
+    server.send(200, "image/svg+xml", out);
+  }
 }
 
-void setup(void)
+void setup()
 {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
@@ -526,9 +529,41 @@ void setup(void)
   Serial.println(WiFi.localIP());
 }
 
-void loop(void)
+void heartBeatPrint()
+{
+  static int num = 1;
+
+  Serial.print(F("."));
+
+  if (num == 80)
+  {
+    Serial.println();
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(F(" "));
+  }
+}
+
+void check_status()
+{
+  static unsigned long checkstatus_timeout = 0;
+
+#define STATUS_CHECK_INTERVAL     10000L
+
+  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
+  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+  {
+    heartBeatPrint();
+    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
+  }
+}
+
+void loop()
 {
   server.handleClient();
+  check_status();
 }
 ```
 
@@ -563,8 +598,8 @@ void loop(void)
 
 #include <WiFiWebServer_RTL8720.h>
 
-char ssid[] = "****";        // your network SSID (name)
-char pass[] = "****";        // your network password
+char ssid[] = "YOUR_SSID";        // your network SSID (name)
+char pass[] = "12345678";         // your network password
 
 #endif    //defines_h
 ```
@@ -585,10 +620,11 @@ The following are debug terminal output and screen shot when running example [**
 ```
 
 Starting AdvancedServer on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 HTTP server started @ 192.168.2.152
+[WIFI] String Len = 0, extend to 2048
 ```
 
 ---
@@ -600,7 +636,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WebClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -671,7 +707,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting ScanNetworks on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -701,7 +737,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting MQTTClient_Auth on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -721,7 +757,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Start MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -751,7 +787,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WiFiUdpNTPClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.0.1
+WiFiWebServer_RTL8720 v1.1.0
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -797,21 +833,6 @@ If you get compilation errors, more often than not, you may need to install a ne
 ---
 ---
 
-
-## Releases
-
-#### Releases v1.0.1
-
-1. Fix typo
-
-
-#### Initial Releases v1.0.0
-
-1. Initial Release to support `Realtek RTL8720DN, RTL8722DM and RTL8722CSM` boards.
-
----
----
-
 This [WiFiWebServer_RTL8720 library](https://github.com/khoih-prog/WiFiWebServer_RTL8720) currently supports these following boards:
 
 1. Realtek **RTL8720DN, RTL8722DM and RTL8722CSM**
@@ -845,7 +866,8 @@ Submit issues to: [WiFiWebServer_RTL8720 issues](https://github.com/khoih-prog/W
 
  1. Add support to Realtek RTL8720DN, RTL8722DM and RTL8722CSM
  2. Add **High-level HTTP (GET, POST, PUT, PATCH, DELETE) and WebSocket Client**
-
+ 3. Fix bug related to usage of Arduino String
+ 4. Optimize library code and examples by using **reference-passing instead of value-passing**.
 
 ---
 ---

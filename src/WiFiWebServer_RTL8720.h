@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -20,13 +21,13 @@
 #ifndef WiFiWebServer_RTL8720_h
 #define WiFiWebServer_RTL8720_h
 
-#define WIFI_WEBSERVER_RTL8720_VERSION          "WiFiWebServer_RTL8720 v1.0.1"
+#define WIFI_WEBSERVER_RTL8720_VERSION          "WiFiWebServer_RTL8720 v1.1.0"
 
 #define WIFI_WEBSERVER_RTL8720_VERSION_MAJOR    1
-#define WIFI_WEBSERVER_RTL8720_VERSION_MINOR    0
-#define WIFI_WEBSERVER_RTL8720_VERSION_PATCH    1
+#define WIFI_WEBSERVER_RTL8720_VERSION_MINOR    1
+#define WIFI_WEBSERVER_RTL8720_VERSION_PATCH    0
 
-#define WIFI_WEBSERVER_RTL8720_VERSION_IN       1000001
+#define WIFI_WEBSERVER_RTL8720_VERSION_IN       1001000
 
 #define USE_NEW_WEBSERVER_VERSION     true
 
@@ -111,6 +112,12 @@ enum HTTPAuthMethod
 #define CONTENT_LENGTH_UNKNOWN ((size_t) -1)
 #define CONTENT_LENGTH_NOT_SET ((size_t) -2)
 
+/////////////////////////////////////////////////////////////////////////
+
+#define RETURN_NEWLINE       "\r\n"
+
+/////////////////////////////////////////////////////////////////////////
+
 class WiFiWebServer;
 
 typedef struct 
@@ -181,19 +188,20 @@ class WiFiWebServer
     }
     #endif
     
-    String arg(String name);            // get request argument value by name
-    String arg(int i);                  // get request argument value by number
-    String argName(int i);              // get request argument name by number
-    int args();                         // get arguments count
-    bool hasArg(String name);           // check if argument exists
+    String arg(const String& name);        // get request argument value by name
+    String arg(int i);              // get request argument value by number
+    String argName(int i);          // get request argument name by number
+    
+    int args();                     // get arguments count
+    bool hasArg(const String& name);       // check if argument exists
     void collectHeaders(const char* headerKeys[], const size_t headerKeysCount); // set the request headers to collect
-    String header(String name);         // get request header value by name
-    String header(int i);               // get request header value by number
-    String headerName(int i);           // get request header name by number
-    int headers();                      // get header count
-    bool hasHeader(String name);        // check if header exists
+    String header(const String& name);      // get request header value by name
+    String header(int i);              // get request header value by number
+    String headerName(int i);          // get request header name by number
+    int headers();                     // get header count
+    bool hasHeader(const String& name);       // check if header exists
 
-    String hostHeader();                // get request host header if available or empty String if not
+    String hostHeader();            // get request host header if available or empty String if not
 
     // send response to the client
     // code - HTTP response code, can be 200 or 404
@@ -238,11 +246,11 @@ class WiFiWebServer
     int  _parseArgumentsPrivate(const String& data, vl::Func<void(String&,String&,const String&,int,int,int,int)> handler);
     bool _parseForm(WiFiClient& client, const String& boundary, uint32_t len);
     #else
-    void _parseArguments(String data);
-    bool _parseForm(WiFiClient& client, String boundary, uint32_t len);
+    void _parseArguments(const String& data);    
+    bool _parseForm(WiFiClient& client, const String& boundary, uint32_t len);
     #endif
     
-    static String _responseCodeToString(int code);    
+    static String _responseCodeToString(int code);
     bool _parseFormUploadAborted();
     void _uploadWriteByte(uint8_t b);
     uint8_t _uploadReadByte(WiFiClient& client);

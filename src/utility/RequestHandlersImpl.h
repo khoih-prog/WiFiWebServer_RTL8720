@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -32,7 +33,7 @@ class FunctionRequestHandler : public RequestHandler
     {
     }
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override
+    bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
       if (_method != HTTP_ANY && _method != requestMethod)
         return false;
@@ -52,7 +53,7 @@ class FunctionRequestHandler : public RequestHandler
       return false;
     }
 
-    bool canUpload(String requestUri) override
+    bool canUpload(const String& requestUri) override
     {
       if (!_ufn || !canHandle(HTTP_POST, requestUri))
         return false;
@@ -60,7 +61,7 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
-    bool handle(WiFiWebServer& server, HTTPMethod requestMethod, String requestUri) override
+    bool handle(WiFiWebServer& server,  const HTTPMethod& requestMethod, const String& requestUri) override
     {
       WFW_UNUSED(server);
       
@@ -71,7 +72,7 @@ class FunctionRequestHandler : public RequestHandler
       return true;
     }
 
-    void upload(WiFiWebServer& server, String requestUri, HTTPUpload& upload) override
+    void upload(WiFiWebServer& server, const String& requestUri, const HTTPUpload& upload) override
     {
       WFW_UNUSED(server);
       WFW_UNUSED(upload);
@@ -91,7 +92,7 @@ class StaticRequestHandler : public RequestHandler
 {
   public:
 
-    bool canHandle(HTTPMethod requestMethod, String requestUri) override
+    bool canHandle(const HTTPMethod& requestMethod, const String& requestUri) override
     {
       if (requestMethod != HTTP_GET)
         return false;

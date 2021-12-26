@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -584,9 +585,8 @@ uint8_t WiFiWebServer::_uploadReadByte(WiFiClient& client)
 
 #else
 
-void WiFiWebServer::_parseArguments(String data)
+void WiFiWebServer::_parseArguments(const String& data)
 {
-
   WS_LOGDEBUG1(F("args: "), data);
 
   if (_currentArgs)
@@ -990,8 +990,8 @@ bool WiFiWebServer::_parseFormUploadAborted()
 #else
 
 
-bool WiFiWebServer::_parseForm(WiFiClient& client, String boundary, uint32_t len) {
-
+bool WiFiWebServer::_parseForm(WiFiClient& client, const String& boundary, uint32_t len) 
+{
   WS_LOGDEBUG1(F("Parse Form: Boundary: "), boundary);
   WS_LOGDEBUG1(F("Length: "), len);
 

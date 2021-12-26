@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -38,33 +39,46 @@
 
 ///////////////////////////////////////
 
-#define WS_LOGERROR(x)         if(_WIFI_LOGLEVEL_>0) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.println(x); }
-#define WS_LOGERROR0(x)        if(_WIFI_LOGLEVEL_>0) { WS_DEBUG_OUTPUT.print(x); }
-#define WS_LOGERROR1(x,y)      if(_WIFI_LOGLEVEL_>0) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(y); }
-#define WS_LOGERROR2(x,y,z)    if(_WIFI_LOGLEVEL_>0) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(z); }
-#define WS_LOGERROR3(x,y,z,w)  if(_WIFI_LOGLEVEL_>0) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(z); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(w); }
+const char WWS_MARK[]  = "[WIFI] ";
+const char WWS_SPACE[] = " ";
+const char WWS_LINE[]  = "========================================\n";
+
+#define WWS_PRINT_MARK   WWS_PRINT(WWS_MARK)
+#define WWS_PRINT_SP     WWS_PRINT(WWS_SPACE)
+#define WWS_PRINT_LINE   WWS_PRINT(WWS_LINE)
+
+#define WWS_PRINT        WS_DEBUG_OUTPUT.print
+#define WWS_PRINTLN      WS_DEBUG_OUTPUT.println
 
 ///////////////////////////////////////
 
-#define WS_LOGWARN(x)          if(_WIFI_LOGLEVEL_>1) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.println(x); }
-#define WS_LOGWARN0(x)         if(_WIFI_LOGLEVEL_>1) { WS_DEBUG_OUTPUT.print(x); }
-#define WS_LOGWARN1(x,y)       if(_WIFI_LOGLEVEL_>1) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(y); }
-#define WS_LOGWARN2(x,y,z)     if(_WIFI_LOGLEVEL_>1) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(z); }
-#define WS_LOGWARN3(x,y,z,w)   if(_WIFI_LOGLEVEL_>1) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(z); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(w); }
+#define WS_LOGERROR(x)         if(_WIFI_LOGLEVEL_>0) { WWS_PRINT_MARK; WWS_PRINTLN(x); }
+#define WS_LOGERROR0(x)        if(_WIFI_LOGLEVEL_>0) { WWS_PRINT(x); }
+#define WS_LOGERROR1(x,y)      if(_WIFI_LOGLEVEL_>0) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINTLN(y); }
+#define WS_LOGERROR2(x,y,z)    if(_WIFI_LOGLEVEL_>0) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINTLN(z); }
+#define WS_LOGERROR3(x,y,z,w)  if(_WIFI_LOGLEVEL_>0) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINT(z); WWS_PRINT_SP; WWS_PRINTLN(w); }
 
 ///////////////////////////////////////
 
-#define WS_LOGINFO(x)          if(_WIFI_LOGLEVEL_>2) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.println(x); }
-#define WS_LOGINFO0(x)         if(_WIFI_LOGLEVEL_>2) { WS_DEBUG_OUTPUT.print(x); }
-#define WS_LOGINFO1(x,y)       if(_WIFI_LOGLEVEL_>2) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(y); }
-#define WS_LOGINFO2(x,y,z)     if(_WIFI_LOGLEVEL_>2) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(z); }
-#define WS_LOGINFO3(x,y,z,w)   if(_WIFI_LOGLEVEL_>2) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(z); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(w); }
+#define WS_LOGWARN(x)          if(_WIFI_LOGLEVEL_>1) { WWS_PRINT_MARK; WWS_PRINTLN(x); }
+#define WS_LOGWARN0(x)         if(_WIFI_LOGLEVEL_>1) { WWS_PRINT(x); }
+#define WS_LOGWARN1(x,y)       if(_WIFI_LOGLEVEL_>1) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINTLN(y); }
+#define WS_LOGWARN2(x,y,z)     if(_WIFI_LOGLEVEL_>1) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINTLN(z); }
+#define WS_LOGWARN3(x,y,z,w)   if(_WIFI_LOGLEVEL_>1) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINT(z); WWS_PRINT_SP; WWS_PRINTLN(w); }
 
 ///////////////////////////////////////
 
-#define WS_LOGDEBUG(x)         if(_WIFI_LOGLEVEL_>3) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.println(x); }
-#define WS_LOGDEBUG0(x)        if(_WIFI_LOGLEVEL_>3) { WS_DEBUG_OUTPUT.print(x); }
-#define WS_LOGDEBUG1(x,y)      if(_WIFI_LOGLEVEL_>3) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(y); }
-#define WS_LOGDEBUG2(x,y,z)    if(_WIFI_LOGLEVEL_>3) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(z); }
-#define WS_LOGDEBUG3(x,y,z,w)  if(_WIFI_LOGLEVEL_>3) { WS_DEBUG_OUTPUT.print("[WIFI] "); WS_DEBUG_OUTPUT.print(x); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(y); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.print(z); WS_DEBUG_OUTPUT.print(" "); WS_DEBUG_OUTPUT.println(w); }
+#define WS_LOGINFO(x)          if(_WIFI_LOGLEVEL_>2) { WWS_PRINT_MARK; WWS_PRINTLN(x); }
+#define WS_LOGINFO0(x)         if(_WIFI_LOGLEVEL_>2) { WWS_PRINT(x); }
+#define WS_LOGINFO1(x,y)       if(_WIFI_LOGLEVEL_>2) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINTLN(y); }
+#define WS_LOGINFO2(x,y,z)     if(_WIFI_LOGLEVEL_>2) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINTLN(z); }
+#define WS_LOGINFO3(x,y,z,w)   if(_WIFI_LOGLEVEL_>2) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINT(z); WWS_PRINT_SP; WWS_PRINTLN(w); }
+
+///////////////////////////////////////
+
+#define WS_LOGDEBUG(x)         if(_WIFI_LOGLEVEL_>3) { WWS_PRINT_MARK; WWS_PRINTLN(x); }
+#define WS_LOGDEBUG0(x)        if(_WIFI_LOGLEVEL_>3) { WWS_PRINT(x); }
+#define WS_LOGDEBUG1(x,y)      if(_WIFI_LOGLEVEL_>3) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINTLN(y); }
+#define WS_LOGDEBUG2(x,y,z)    if(_WIFI_LOGLEVEL_>3) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINTLN(z); }
+#define WS_LOGDEBUG3(x,y,z,w)  if(_WIFI_LOGLEVEL_>3) { WWS_PRINT_MARK; WWS_PRINT(x); WWS_PRINT_SP; WWS_PRINT(y); WWS_PRINT_SP; WWS_PRINT(z); WWS_PRINT_SP; WWS_PRINTLN(w); }
 

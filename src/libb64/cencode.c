@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #include "cencode.h"

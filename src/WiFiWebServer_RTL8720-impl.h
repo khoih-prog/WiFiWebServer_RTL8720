@@ -7,12 +7,13 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
 
-  Version: 1.0.1
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      14/07/2021 Initial coding for Realtek RTL8720DN, RTL8722DM and RTL8722CSM
   1.0.1   K Hoang      07/08/2021 Fix version typo
+  1.1.0   K Hoang      26/12/2021 Fix bug related to usage of Arduino String. Optimize code
  ***************************************************************************************************************************************/
 
 #pragma once
@@ -251,7 +252,7 @@ void WiFiWebServer::handleClient()
     delay(1);
   }  
   
-  // KH, fix bug relating to New NINA FW 1.4.0. Have to close the connection
+  // KH, fix bug. Have to close the connection
   _currentClient.stop();
   WS_LOGDEBUG(F("handleClient: Client disconnected"));
 }
@@ -260,11 +261,11 @@ void WiFiWebServer::handleClient()
 
 void WiFiWebServer::handleClient() 
 {
-  if (_currentStatus == HC_NONE) 
+  if (_currentStatus == HC_NONE)
   {
     WiFiClient client = _server.available();
     
-    if (!client) 
+    if (!client)
     {
       return;
     }
@@ -275,29 +276,35 @@ void WiFiWebServer::handleClient()
     _currentStatus = HC_WAIT_READ;
     _statusChange = millis();
   }
-  
-  if (!_currentClient.connected()) 
+
+  if (!_currentClient.connected())
   {
-    _currentClient = WiFiClient();
+    WS_LOGDEBUG(F("handleClient: Client not connected"));
+    
+    //_currentClient = WiFiClient();    
     _currentStatus = HC_NONE;
-    return;
+    
+    goto stopClient;
+    //return;
   }
 
   // Wait for data from client to become available
-  if (_currentStatus == HC_WAIT_READ) 
+  if (_currentStatus == HC_WAIT_READ)
   {
-    WS_LOGDEBUG(F("handleClient: _currentStatus = HC_WAIT_READ"));
+    //WS_LOGDEBUG(F("handleClient: _currentStatus = HC_WAIT_READ"));
     
-    if (!_currentClient.available()) 
+    if (!_currentClient.available())
     {
-      WS_LOGDEBUG(F("handleClient: Client not available"));
+      //WS_LOGDEBUG(F("handleClient: Client not available"));
       
-      if (millis() - _statusChange > HTTP_MAX_DATA_WAIT) 
+      if (millis() - _statusChange > HTTP_MAX_DATA_WAIT)
       {
         WS_LOGDEBUG(F("handleClient: HTTP_MAX_DATA_WAIT Timeout"));
-
-        _currentClient = WiFiClient();
+        
+        //_currentClient = WiFiClient();
         _currentStatus = HC_NONE;
+        
+        goto stopClient;
       }
       
       yield();
@@ -305,31 +312,35 @@ void WiFiWebServer::handleClient()
     }
 
     WS_LOGDEBUG(F("handleClient: Parsing Request"));
-
-    if (!_parseRequest(_currentClient)) 
+    
+    if (!_parseRequest(_currentClient))
     {
       WS_LOGDEBUG(F("handleClient: Can't parse request"));
-
-      _currentClient = WiFiClient();
+      
+      //_currentClient = WiFiClient();
       _currentStatus = HC_NONE;
-      return;
+      
+      goto stopClient;
+      //return;
     }
-
+    
     _currentClient.setTimeout(HTTP_MAX_SEND_WAIT);
     _contentLength = CONTENT_LENGTH_NOT_SET;
-
+    
     //WS_LOGDEBUG(F("handleClient _handleRequest"));
     _handleRequest();
 
-    if (!_currentClient.connected()) 
+    if (!_currentClient.connected())
     {
-      WS_LOGINFO(F("handleClient: Connection closed"));
-
-      _currentClient = WiFiClient();
+      WS_LOGDEBUG(F("handleClient: Connection closed"));
+      
+      //_currentClient = WiFiClient();
       _currentStatus = HC_NONE;
-      return;
-    } 
-    else 
+      
+      goto stopClient;
+      //return;
+    }
+    else
     {
       _currentStatus = HC_WAIT_CLOSE;
       _statusChange = millis();
@@ -337,25 +348,27 @@ void WiFiWebServer::handleClient()
     }
   }
 
-  if (_currentStatus == HC_WAIT_CLOSE) 
+  if (_currentStatus == HC_WAIT_CLOSE)
   {
-    if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT) 
+    if (millis() - _statusChange > HTTP_MAX_CLOSE_WAIT)
     {
-      _currentClient = WiFiClient();
+      //_currentClient = WiFiClient();
       _currentStatus = HC_NONE;
-
+      
       WS_LOGDEBUG(F("handleClient: HTTP_MAX_CLOSE_WAIT Timeout"));
-
+      
       yield();
-    } 
-    else 
+    }
+    else
     {
       yield();
       return;
     }
   }
+
+stopClient:
   
-  // KH, fix bug relating to New NINA FW 1.4.0. Have to close the connection
+  // KH, fix bug. Have to close the connection
   _currentClient.stop();
   WS_LOGDEBUG(F("handleClient: Client disconnected"));
 }
@@ -434,9 +447,7 @@ void WiFiWebServer::_prepareHeader(String& response, int code, const char* conte
   response += _responseHeaders;
   response += "\r\n";
   
-  // RM & KH fix
-  //_responseHeaders = String();
-  _responseHeaders = *(new String());
+  _responseHeaders = String("");
 }
 
 void WiFiWebServer::send(int code, const char* content_type, const String& content) 
@@ -501,7 +512,7 @@ void WiFiWebServer::send(int code, const String& content_type, const String& con
 
 void WiFiWebServer::sendContent(const String& content) 
 {
-  const char * footer = "\r\n";
+  const char * footer = RETURN_NEWLINE;
   size_t len = content.length();
   
   if (_chunked) 
@@ -526,7 +537,7 @@ void WiFiWebServer::sendContent(const String& content)
 
 void WiFiWebServer::sendContent(const String& content, size_t size)
 {
-  const char * footer = "\r\n";
+  const char * footer = RETURN_NEWLINE;
   
   if (_chunked) 
   {
@@ -550,7 +561,7 @@ void WiFiWebServer::sendContent(const String& content, size_t size)
   }
 }
 
-String WiFiWebServer::arg(String name) 
+String WiFiWebServer::arg(const String& name) 
 {
   for (int i = 0; i < _currentArgCount; ++i) 
   {
@@ -582,7 +593,7 @@ int WiFiWebServer::args()
   return _currentArgCount;
 }
 
-bool WiFiWebServer::hasArg(String  name) 
+bool WiFiWebServer::hasArg(const String& name) 
 {
   for (int i = 0; i < _currentArgCount; ++i) 
   {
@@ -594,7 +605,7 @@ bool WiFiWebServer::hasArg(String  name)
 }
 
 
-String WiFiWebServer::header(String name) 
+String WiFiWebServer::header(const String& name) 
 {
   for (int i = 0; i < _headerKeysCount; ++i) 
   {
@@ -642,7 +653,7 @@ int WiFiWebServer::headers()
   return _headerKeysCount;
 }
 
-bool WiFiWebServer::hasHeader(String name) 
+bool WiFiWebServer::hasHeader(const String& name) 
 {
   for (int i = 0; i < _headerKeysCount; ++i) 
   {
@@ -711,9 +722,7 @@ void WiFiWebServer::_handleRequest()
     _finalizeResponse();
   }
   
-  // RM & KH fix
-  //_currentUri = String();
-  _currentUri = *(new String());
+  _currentUri = String("");
 }
 
 void WiFiWebServer::_finalizeResponse() 
