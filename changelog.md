@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.1.1](#releases-v111)
   * [Major Releases v1.1.0](#major-releases-v110)
   * [Releases v1.0.1](#releases-v101)
   * [Initial Releases v1.0.0](#initial-releases-v100)
@@ -21,6 +22,10 @@
 ---
 
 ## Changelog
+
+#### Releases v1.1.1
+
+1. Fix authenticate issue caused by libb64
 
 ### Major Releases v1.1.0
 

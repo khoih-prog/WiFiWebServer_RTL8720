@@ -121,7 +121,7 @@ This [**WiFiWebServer_RTL8720 library**](https://github.com/khoih-prog/WiFiWebSe
 
 ## Prerequisites
 
- 1. [`Arduino IDE 1.8.19+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Arduino AmebaD core 3.1.1+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
  3. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
@@ -620,7 +620,7 @@ The following are debug terminal output and screen shot when running example [**
 ```
 
 Starting AdvancedServer on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 HTTP server started @ 192.168.2.152
@@ -636,7 +636,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WebClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -707,7 +707,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting ScanNetworks on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -737,7 +737,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting MQTTClient_Auth on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -757,7 +757,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Start MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -787,7 +787,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WiFiUdpNTPClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.0
+WiFiWebServer_RTL8720 v1.1.1
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
