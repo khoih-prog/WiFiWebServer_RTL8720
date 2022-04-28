@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.1.2](#releases-v112)
   * [Releases v1.1.1](#releases-v111)
   * [Major Releases v1.1.0](#major-releases-v110)
   * [Releases v1.0.1](#releases-v101)
@@ -22,6 +23,11 @@
 ---
 
 ## Changelog
+
+#### Releases v1.1.2
+
+1. Change from `arduino.cc` to `arduino.tips` in examples
+2. Update `Packages' Patches`
 
 #### Releases v1.1.1
 

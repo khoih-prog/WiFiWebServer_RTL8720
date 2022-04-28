@@ -6,7 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiWebServer_RTL8720.svg)](http://github.com/khoih-prog/WiFiWebServer_RTL8720/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 
 ---
@@ -360,252 +361,14 @@ Example:
 
 #### 1. File [AdvancedWebServer.ino](examples/AdvancedWebServer/AdvancedWebServer.ino)
 
+https://github.com/khoih-prog/WiFiWebServer_RTL8720/blob/74723f4d6f07671dc33d9d6421eea8f537bf01af/examples/AdvancedWebServer/AdvancedWebServer.ino#L40-L245
 
-```cpp
-#include "defines.h"
-
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
-int reqCount = 0;                // number of requests received
-
-WiFiWebServer server(80);
-
-const int led = 13;
-
-void handleRoot()
-{
-#define BUFFER_SIZE     512
-
-  digitalWrite(led, 1);
-  char temp[BUFFER_SIZE];
-  int sec = millis() / 1000;
-  int min = sec / 60;
-  int hr = min / 60;
-  int day = hr / 24;
-
-  hr = hr % 24;
-
-  snprintf(temp, BUFFER_SIZE - 1,
-           "<html>\
-<head>\
-<meta http-equiv='refresh' content='5'/>\
-<title>%s</title>\
-<style>\
-body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-</style>\
-</head>\
-<body>\
-<h1>Hello from %s</h1>\
-<h3>running WiFiWebServer</h3>\
-<h3>on %s</h3>\
-<p>Uptime: %d d %02d:%02d:%02d</p>\
-<img src=\"/test.svg\" />\
-</body>\
-</html>", BOARD_NAME, BOARD_NAME, SHIELD_TYPE, day, hr, min % 60, sec % 60);
-
-  server.send(200, F("text/html"), temp);
-  digitalWrite(led, 0);
-}
-
-void handleNotFound()
-{
-  digitalWrite(led, 1);
-
-  String message = F("File Not Found\n\n");
-
-  message += F("URI: ");
-  message += server.uri();
-  message += F("\nMethod: ");
-  message += (server.method() == HTTP_GET) ? F("GET") : F("POST");
-  message += F("\nArguments: ");
-  message += server.args();
-  message += F("\n");
-
-  for (uint8_t i = 0; i < server.args(); i++)
-  {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-
-  server.send(404, F("text/plain"), message);
-
-  digitalWrite(led, 0);
-}
-
-#define ORIGINAL_STR_LEN        2048
-
-void drawGraph()
-{
-  static String out;
-  static uint16_t previousStrLen = ORIGINAL_STR_LEN;
-
-  if (out.length() == 0)
-  {
-    WS_LOGWARN1(F("String Len = 0, extend to"), ORIGINAL_STR_LEN);
-    out.reserve(ORIGINAL_STR_LEN);
-  }
-
-  out = F( "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n" \
-           "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"3\" stroke=\"rgb(0, 0, 0)\" />\n" \
-           "<g stroke=\"blue\">\n");
-
-  char temp[70];
-  
-  int y = rand() % 130;
-
-  for (int x = 10; x < 300; x += 10)
-  {
-    int y2 = rand() % 130;
-    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
-    out += temp;
-    y = y2;
-  }
-  
-  out += F("</g>\n</svg>\n");
-
-  WS_LOGDEBUG1(F("String Len = "), out.length());
-
-  if (out.length() > previousStrLen)
-  {
-    WS_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), out.length() + 48);
-
-    previousStrLen = out.length() + 48;
-    
-    out.reserve(previousStrLen);
-  }
-  else
-  {
-    server.send(200, "image/svg+xml", out);
-  }
-}
-
-void setup()
-{
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
-
-  Serial.begin(115200);
-  while (!Serial);
-
-  Serial.print(F("\nStarting AdvancedServer on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
-  Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
-
-  if (WiFi.status() == WL_NO_SHIELD)
-  {
-    Serial.println(F("WiFi shield not present"));
-    // don't continue
-    while (true);
-  }
-
-  String fv = WiFi.firmwareVersion();
-
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
-  {
-    Serial.println("Please upgrade the firmware");
-  }
-  
-  // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
-  {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
-    // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
-    status = WiFi.begin(ssid, pass);
-
-    // wait 10 seconds for connection:
-    delay(10000);
-  }
-
-  server.on(F("/"), handleRoot);
-  server.on(F("/test.svg"), drawGraph);
-  server.on(F("/inline"), []()
-  {
-    server.send(200, F("text/plain"), F("This works as well"));
-  });
-
-  server.onNotFound(handleNotFound);
-
-  server.begin();
-
-  Serial.print(F("HTTP server started @ "));
-  Serial.println(WiFi.localIP());
-}
-
-void heartBeatPrint()
-{
-  static int num = 1;
-
-  Serial.print(F("."));
-
-  if (num == 80)
-  {
-    Serial.println();
-    num = 1;
-  }
-  else if (num++ % 10 == 0)
-  {
-    Serial.print(F(" "));
-  }
-}
-
-void check_status()
-{
-  static unsigned long checkstatus_timeout = 0;
-
-#define STATUS_CHECK_INTERVAL     10000L
-
-  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
-  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-  {
-    heartBeatPrint();
-    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
-  }
-}
-
-void loop()
-{
-  server.handleClient();
-  check_status();
-}
-```
 
 #### 2. File [defines.h](examples/AdvancedWebServer/defines.h)
 
-```cpp
-#ifndef defines_h
-#define defines_h
 
-#if !defined(CONFIG_PLATFORM_8721D)
-  #error Only for Ameba Realtek RTL8720DN, RTL8722DM and RTL8722CSM platform.
-#endif
+https://github.com/khoih-prog/WiFiWebServer_RTL8720/blob/74723f4d6f07671dc33d9d6421eea8f537bf01af/examples/AdvancedWebServer/defines.h#L11-L42
 
-#define DEBUG_WIFI_WEBSERVER_PORT   Serial
-
-// Debug Level from 0 to 4
-#define _WIFI_LOGLEVEL_             3
-
-#define BOARD_TYPE      "Rtlduino RTL8720DN"
-
-#ifndef BOARD_NAME
-  #if defined(ARDUINO_BOARD)
-    #define BOARD_NAME    ARDUINO_BOARD
-  #elif defined(BOARD_TYPE)
-    #define BOARD_NAME    BOARD_TYPE
-  #else
-    #define BOARD_NAME    "Unknown Board"
-  #endif  
-#endif
-
-#define SHIELD_TYPE       "RTL8720DN"
-
-#include <WiFiWebServer_RTL8720.h>
-
-char ssid[] = "YOUR_SSID";        // your network SSID (name)
-char pass[] = "12345678";         // your network password
-
-#endif    //defines_h
-```
 
 ---
 ---
@@ -621,13 +384,42 @@ The following are debug terminal output and screen shot when running example [**
 </p>
 
 ```
-
 Starting AdvancedServer on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+WiFiWebServer_RTL8720 v1.1.2
+interface 0 is initialized
+interface 1 is initialized
+Initializing WIFI ...
+WIFI initialized
 Current Firmware Version = 1.0.0
-Attempting to connect to SSID: HueNet_5G
-HTTP server started @ 192.168.2.152
+Attempting to connect to SSID: HueNet1
+RTL8721D[Driver]: set ssid [HueNet1] 
+RTL8721D[Driver]: rtw_set_wpa_ie[1160]: AuthKeyMgmt = 0x2 
+RTL8721D[Driver]: rtw_restruct_sec_ie[4225]: no pmksa cached 
+RTL8721D[Driver]: start auth to 68:7f:74:94:f4:a5
+RTL8721D[Driver]: auth alg = 2
+RTL8721D[Driver]: 
+OnAuthClient:algthm = 0, seq = 2, status = 0, sae_msg_len = 11
+RTL8721D[Driver]: auth success, start assoc
+RTL8721D[Driver]: association success(res=1)
+RTL8721D[Driver]: ClientSendEAPOL[1624]: no use cache pmksa 
+RTL8721D[Driver]: ClientSendEAPOL[1624]: no use cache pmksa 
+RTL8721D[Driver]: set pairwise key to hw: alg:4(WEP40-1 WEP104-5 TKIP-2 AES-4)
+RTL8721D[Driver]: set group key to hw: alg:2(WEP40-1 WEP104-5 TKIP-2 AES-4) keyid:1
+Interface 0 IP address : 192.168.2.117
+[INFO] Listen socket successfully
+[INFO] Socket conntect successfully 
+HTTP server started @ 192.168.2.117
+[INFO] Accept connection successfully
+A client connected to this server :
+[PORT]: 36912
+[IP]:192.168.2.30
+[INFO] Accept connection successfully
+A client connected to this server :
+[PORT]: 36914
+[IP]:192.168.2.30
+
 [WIFI] String Len = 0, extend to 2048
+[INFO] Accept connection successfully
 ```
 
 ---
@@ -638,25 +430,48 @@ The following are debug terminal output and screen shot when running example [**
 
 
 ```
-Starting WebClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+Starting WebClientRepeating on Rtlduino RTL8720DN with RTL8720DN
+WiFiWebServer_RTL8720 v1.1.2
+interface 0 is initialized
+interface 1 is initialized
+Initializing WIFI ...
+WIFI initialized
 Current Firmware Version = 1.0.0
-Attempting to connect to SSID: HueNet_5G
-You're connected to the network, IP = 192.168.2.152
-SSID: HueNet_5G, Signal strength (RSSI):-26 dBm
-
-Starting connection to server...
-Connected to server
+Attempting to connect to SSID: HueNet1
+RTL8721D[Driver]: set ssid [HueNet1] 
+RTL8721D[Driver]: rtw_set_wpa_ie[1160]: AuthKeyMgmt = 0x2 
+RTL8721D[Driver]: rtw_restruct_sec_ie[4225]: no pmksa cached 
+RTL8721D[Driver]: start auth to 68:7f:74:94:f4:a5
+RTL8721D[Driver]: auth alg = 2
+RTL8721D[Driver]: 
+OnAuthClient:algthm = 0, seq = 2, status = 0, sae_msg_len = 11
+RTL8721D[Driver]: auth success, start assoc
+RTL8721D[Driver]: association success(res=1)
+RTL8721D[Driver]: ClientSendEAPOL[1624]: no use cache pmksa 
+RTL8721D[Driver]: ClientSendEAPOL[1624]: no use cache pmksa 
+RTL8721D[Driver]: set pairwise key to hw: alg:4(WEP40-1 WEP104-5 TKIP-2 AES-4)
+RTL8721D[Driver]: set group key to hw: alg:2(WEP40-1 WEP104-5 TKIP-2 AES-4) keyid:1
+Interface 0 IP address : 192.168.2.117You're connected to the network, IP = 192.168.2.117
+SSID: HueNet1, Signal strength (RSSI):-26 dBm
+[INFO]server_drv.cpp:  start_client
+[INFO] Create socket successfully
+[INFO] Connect to Server successfully!
+Connecting...
 HTTP/1.1 200 OK
-Server: nginx/1.4.2
-Date: Thu, 15 Jul 2021 01:46:26 GMT
+Date: Thu, 28 Apr 2022 02:46:07 GMT
 Content-Type: text/plain
 Content-Length: 2263
-Last-Modified: Wed, 02 Oct 2013 13:46:47 GMT
 Connection: close
-Vary: Accept-Encoding
-ETag: "524c23c7-8d7"
-Accept-Ranges: bytes
+x-amz-id-2: 0v2VZitmKPb1GvH/Of2rACgGVIyluvsMCTX1kbkYKmtOMZMLlHXAT1n7wdAcMiFQ6LPQ1Qy2tSg=
+x-amz-request-id: 72CSXT4AMDTCDJYE
+Last-Modified: Wed, 23 Feb 2022 14:56:42 GMT
+ETag: "667cf48afcc12c38c8c1637947a04224"
+CF-Cache-Status: DYNAMIC
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=vdeduIIMRyhO44T972z7Z0qfco3T5svA5zYhyMJqQE5hTNGvTxTg%2B8S8e90uedVsSDo5oj73gg%2BxEoPfXW1%2FUCfu6XkFt6oLuf9zjLCo%2BSe58OLsZhr25mZ3MxPD%2ByY%3D"}],"group":"cf-nel","max_age":604800}
+NEL: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+CF-RAY: 702c77389848b671-YWG
+alt-svc: h3=":443"; ma=86400, h3-29=":443"; ma=86400
 
 
            `:;;;,`                      .:;;:.           
@@ -698,8 +513,6 @@ Accept-Ranges: bytes
   ,;;;;;  ;;`;;   ;;  ;; .;;  ;;   ,;,   ;; ;;;, ;;  ;;  
   ;;  ,;, ;; .;;  ;;;;;:  ;;;;;: ,;;;;;: ;;  ;;, ;;;;;;  
   ;;   ;; ;;  ;;` ;;;;.   `;;;:  ,;;;;;, ;;  ;;,  ;;;;   
-
-Disconnecting from server...
 ```
 
 ---
@@ -710,7 +523,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting ScanNetworks on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 You're connected to the network, IP = 192.168.2.152
@@ -740,7 +553,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting MQTTClient_Auth on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -760,7 +573,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Start MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -790,7 +603,7 @@ The following are debug terminal output and screen shot when running example [**
 
 ```
 Starting WiFiUdpNTPClient on Rtlduino RTL8720DN with RTL8720DN
-WiFiWebServer_RTL8720 v1.1.1
+WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
 Attempting to connect to SSID: HueNet_5G
 Connected! IP address: 192.168.2.152
@@ -871,6 +684,8 @@ Submit issues to: [WiFiWebServer_RTL8720 issues](https://github.com/khoih-prog/W
  2. Add **High-level HTTP (GET, POST, PUT, PATCH, DELETE) and WebSocket Client**
  3. Fix bug related to usage of Arduino String
  4. Optimize library code and examples by using **reference-passing instead of value-passing**.
+ 5. Change from `arduino.cc` to `arduino.tips` in examples
+
 
 ---
 ---
