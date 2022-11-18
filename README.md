@@ -583,7 +583,7 @@ STM32_Pub
 Attempting MQTT connection to broker.emqx.io
 ...connected
 Published connection message successfully!
-Subcribed to: STM32_Sub
+Subscribed to: STM32_Sub
 MQTT Message Send : STM32_Pub => Hello from MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
 MQTT Message receive [STM32_Pub] Hello from MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
 MQTT Message Send : STM32_Pub => Hello from MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
