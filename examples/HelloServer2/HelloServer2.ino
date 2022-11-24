@@ -20,7 +20,7 @@ const int led = 13;
 void handleRoot()
 {
 #define BUFFER_SIZE     512
-  
+
   digitalWrite(led, 1);
   char temp[BUFFER_SIZE];
   int sec = millis() / 1000;
@@ -52,9 +52,9 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 void handleNotFound()
 {
   digitalWrite(led, 1);
-  
+
   String message = F("File Not Found\n\n");
-  
+
   message += F("URI: ");
   message += server.uri();
   message += F("\nMethod: ");
@@ -62,14 +62,14 @@ void handleNotFound()
   message += F("\nArguments: ");
   message += server.args();
   message += F("\n");
-  
+
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-  
+
   server.send(404, F("text/plain"), message);
-  
+
   digitalWrite(led, 0);
 }
 
@@ -80,33 +80,39 @@ void setup(void)
 
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
+
   while (!Serial);
 
-  Serial.print(F("\nStarting HelloServer2 on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting HelloServer2 on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
 
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
 
   String fv = WiFi.firmwareVersion();
 
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
+  Serial.print("Current Firmware Version = ");
+  Serial.println(fv);
+
+  if (fv != LATEST_RTL8720_FIRMWARE)
   {
     Serial.println("Please upgrade the firmware");
   }
-  
+
   // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
+  while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+
     // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
     status = WiFi.begin(ssid, pass);
 
@@ -116,14 +122,14 @@ void setup(void)
 
   server.on(F("/"), handleRoot);
 
-  server.on(F("/inline"), []() 
+  server.on(F("/inline"), []()
   {
     server.send(200, F("text/plain"), F("This works as well"));
   });
 
-  server.on(F("/gif"), []() 
+  server.on(F("/gif"), []()
   {
-    static const uint8_t gif[] PROGMEM = 
+    static const uint8_t gif[] PROGMEM =
     {
       0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x10, 0x00, 0x10, 0x00, 0x80, 0x01,
       0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x2c, 0x00, 0x00, 0x00, 0x00,
@@ -131,7 +137,7 @@ void setup(void)
       0x00, 0x5f, 0x74, 0xb4, 0x56, 0xb0, 0xb0, 0xd2, 0xf2, 0x35, 0x1e, 0x4c,
       0x0c, 0x24, 0x5a, 0xe6, 0x89, 0xa6, 0x4d, 0x01, 0x00, 0x3b
     };
-    
+
     char gif_colored[sizeof(gif)];
 
     memcpy(gif_colored, gif, sizeof(gif));

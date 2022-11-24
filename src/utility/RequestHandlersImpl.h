@@ -27,7 +27,8 @@ class FunctionRequestHandler : public RequestHandler
 {
   public:
 
-    FunctionRequestHandler(WiFiWebServer::THandlerFunction fn, WiFiWebServer::THandlerFunction ufn, const String &uri, HTTPMethod method)
+    FunctionRequestHandler(WiFiWebServer::THandlerFunction fn, WiFiWebServer::THandlerFunction ufn, const String &uri,
+                           HTTPMethod method)
       : _fn(fn)
       , _ufn(ufn)
       , _uri(uri)
@@ -66,7 +67,7 @@ class FunctionRequestHandler : public RequestHandler
     bool handle(WiFiWebServer& server,  const HTTPMethod& requestMethod, const String& requestUri) override
     {
       WFW_UNUSED(server);
-      
+
       if (!canHandle(requestMethod, requestUri))
         return false;
 
@@ -78,7 +79,7 @@ class FunctionRequestHandler : public RequestHandler
     {
       WFW_UNUSED(server);
       WFW_UNUSED(upload);
-      
+
       if (canUpload(requestUri))
         _ufn();
     }
@@ -133,27 +134,48 @@ class StaticRequestHandler : public RequestHandler
 
     static String getContentType(const String& path)
     {
-      if (path.endsWith(".html"))           return "text/html";
-      else if (path.endsWith(".htm"))       return "text/html";
-      else if (path.endsWith(".css"))       return "text/css";
-      else if (path.endsWith(".txt"))       return "text/plain";
-      else if (path.endsWith(".js"))        return "application/javascript";
-      else if (path.endsWith(".png"))       return "image/png";
-      else if (path.endsWith(".gif"))       return "image/gif";
-      else if (path.endsWith(".jpg"))       return "image/jpeg";
-      else if (path.endsWith(".ico"))       return "image/x-icon";
-      else if (path.endsWith(".svg"))       return "image/svg+xml";
-      else if (path.endsWith(".ttf"))       return "application/x-font-ttf";
-      else if (path.endsWith(".otf"))       return "application/x-font-opentype";
-      else if (path.endsWith(".woff"))      return "application/font-woff";
-      else if (path.endsWith(".woff2"))     return "application/font-woff2";
-      else if (path.endsWith(".eot"))       return "application/vnd.ms-fontobject";
-      else if (path.endsWith(".sfnt"))      return "application/font-sfnt";
-      else if (path.endsWith(".xml"))       return "text/xml";
-      else if (path.endsWith(".pdf"))       return "application/pdf";
-      else if (path.endsWith(".zip"))       return "application/zip";
-      else if (path.endsWith(".gz"))        return "application/x-gzip";
-      else if (path.endsWith(".appcache"))  return "text/cache-manifest";
+      if (path.endsWith(".html"))
+        return "text/html";
+      else if (path.endsWith(".htm"))
+        return "text/html";
+      else if (path.endsWith(".css"))
+        return "text/css";
+      else if (path.endsWith(".txt"))
+        return "text/plain";
+      else if (path.endsWith(".js"))
+        return "application/javascript";
+      else if (path.endsWith(".png"))
+        return "image/png";
+      else if (path.endsWith(".gif"))
+        return "image/gif";
+      else if (path.endsWith(".jpg"))
+        return "image/jpeg";
+      else if (path.endsWith(".ico"))
+        return "image/x-icon";
+      else if (path.endsWith(".svg"))
+        return "image/svg+xml";
+      else if (path.endsWith(".ttf"))
+        return "application/x-font-ttf";
+      else if (path.endsWith(".otf"))
+        return "application/x-font-opentype";
+      else if (path.endsWith(".woff"))
+        return "application/font-woff";
+      else if (path.endsWith(".woff2"))
+        return "application/font-woff2";
+      else if (path.endsWith(".eot"))
+        return "application/vnd.ms-fontobject";
+      else if (path.endsWith(".sfnt"))
+        return "application/font-sfnt";
+      else if (path.endsWith(".xml"))
+        return "text/xml";
+      else if (path.endsWith(".pdf"))
+        return "application/pdf";
+      else if (path.endsWith(".zip"))
+        return "application/zip";
+      else if (path.endsWith(".gz"))
+        return "application/x-gzip";
+      else if (path.endsWith(".appcache"))
+        return "text/cache-manifest";
 
       return "application/octet-stream";
     }

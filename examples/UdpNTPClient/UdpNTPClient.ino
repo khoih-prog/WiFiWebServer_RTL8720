@@ -6,16 +6,16 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiWebServer_RTL8720
   Licensed under MIT license
-  
+
   Get the time from a Network Time Protocol (NTP) time server.
   Demonstrates use of UDP to send and receive data packets
   For more on NTP time servers and the messages needed to communicate with them,
   see http://en.wikipedia.org/wiki/Network_Time_Protocol
-  
+
   NOTE: The serial buffer size must be larger than 36 + packet size
   In this example we use an UDP packet of 48 bytes so the buffer must be
   at least 36+48=84 bytes that exceeds the default buffer size (64).
-  
+
   You must modify the serial buffer size to 128
   For HardwareSerial modify _SS_MAX_RX_BUFF in
   Arduino\hardware\arduino\avr\cores\arduino\HardwareSerial.h
@@ -68,33 +68,39 @@ void sendNTPpacket(char *ntpSrv)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
-  Serial.print(F("\nStarting UdpNTPClient on "));  Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting UdpNTPClient on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
 
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
 
   String fv = WiFi.firmwareVersion();
 
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
+  Serial.print("Current Firmware Version = ");
+  Serial.println(fv);
+
+  if (fv != LATEST_RTL8720_FIRMWARE)
   {
     Serial.println("Please upgrade the firmware");
   }
-  
+
   // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
+  while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+
     // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
     status = WiFi.begin(ssid, pass);
 
@@ -112,13 +118,13 @@ void setup()
   Serial.println(localPort);
 }
 
-void loop() 
+void loop()
 {
   sendNTPpacket(timeServer); // send an NTP packet to a time server
   // wait to see if a reply is available
   delay(1000);
-  
-  if (Udp.parsePacket()) 
+
+  if (Udp.parsePacket())
   {
     Serial.println(F("Packet received"));
     // We've received a packet, read the data from it
@@ -148,23 +154,25 @@ void loop()
     Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
     Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
     Serial.print(':');
-    
-    if (((epoch % 3600) / 60) < 10) 
+
+    if (((epoch % 3600) / 60) < 10)
     {
       // In the first 10 minutes of each hour, we'll want a leading '0'
       Serial.print('0');
     }
+
     Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
     Serial.print(':');
-    
-    if ((epoch % 60) < 10) 
+
+    if ((epoch % 60) < 10)
     {
       // In the first 10 seconds of each minute, we'll want a leading '0'
       Serial.print('0');
     }
+
     Serial.println(epoch % 60); // print the second
   }
-  
+
   // wait ten seconds before asking for the time again
   delay(10000);
 }

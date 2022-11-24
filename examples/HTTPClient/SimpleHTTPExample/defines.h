@@ -30,7 +30,7 @@
     #define BOARD_NAME    BOARD_TYPE
   #else
     #define BOARD_NAME    "Unknown Board"
-  #endif  
+  #endif
 #endif
 
 #define SHIELD_TYPE       "RTL8720DN"

@@ -48,7 +48,7 @@ void WiFi_RingBuffer::push(char c)
 {
   *ringBufP = c;
   ringBufP++;
-  
+
   if (ringBufP >= ringBufEnd)
     ringBufP = ringBuf;
 }
@@ -59,7 +59,7 @@ bool WiFi_RingBuffer::endsWith(const char* str)
 
   // b is the start position into the ring buffer
   char* b = ringBufP - findStrLen;
-  
+
   if (b < ringBuf)
     b = b + _size;
 
@@ -72,7 +72,7 @@ bool WiFi_RingBuffer::endsWith(const char* str)
       return false;
 
     b++;
-    
+
     if (b == ringBufEnd)
       b = ringBuf;
   }

@@ -8,7 +8,7 @@
   Licensed under MIT license
  ***************************************************************************************************************************************/
 
-#include "defines.h"    
+#include "defines.h"
 
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 int reqCount = 0;                // number of requests received
@@ -19,21 +19,22 @@ WiFiWebServer server(80);
 bool is_authenticated()
 {
   Serial.println(F("Enter is_authenticated"));
-  
+
   if (server.hasHeader(F("Cookie")))
   {
     Serial.print(F("Found cookie: "));
     String cookie = server.header(F("Cookie"));
     Serial.println(cookie);
+
     if (cookie.indexOf(F("RTLSESSIONID=1")) != -1)
     {
       Serial.println(F("Authentication Successful"));
       return true;
     }
   }
-  
+
   Serial.println(F("Authentication Failed"));
-  
+
   return false;
 }
 
@@ -45,7 +46,7 @@ void handleLogin()
   if (server.hasHeader(F("Cookie")))
   {
     Serial.print(F("Found cookie: "));
-    
+
     String cookie = server.header(F("Cookie"));
     Serial.println(cookie);
   }
@@ -71,6 +72,7 @@ void handleLogin()
       Serial.println(F("Log in Successful"));
       return;
     }
+
     msg = F("Wrong username/password! try again.");
     Serial.println(F("Log in Failed"));
   }
@@ -82,7 +84,7 @@ void handleLogin()
   content += msg;
   content += F("<br>");
   content += F("You also can go <a href='/inline'>here</a></body></html>");
-  
+
   server.send(200, F("text/html"), content);
 }
 
@@ -93,7 +95,7 @@ void handleRoot()
 {
   static String content;
   static uint16_t previousStrLen = ORIGINAL_STR_LEN;
-  
+
   Serial.println(F("Enter handleRoot"));
 
   if (!is_authenticated())
@@ -101,11 +103,11 @@ void handleRoot()
     server.sendHeader(F("Location"), F("/login"));
     server.sendHeader(F("Cache-Control"), F("no-cache"));
     server.send(301);
-    
+
     return;
   }
 
-  content = F("<html><body><H2>Hello, you successfully connected to RTL8720DN on "); 
+  content = F("<html><body><H2>Hello, you successfully connected to RTL8720DN on ");
   content += BOARD_NAME;
   content += F("!</H2><br>");
 
@@ -123,7 +125,7 @@ void handleRoot()
     WS_LOGERROR3(F("String Len > "), previousStrLen, F(", extend to"), content.length() + 48);
 
     previousStrLen = content.length() + 48;
-    
+
     content.reserve(previousStrLen);
   }
   else
@@ -135,9 +137,9 @@ void handleRoot()
 
 //no need authentication
 void handleNotFound()
-{ 
+{
   String message = F("File Not Found\n\n");
-  
+
   message += F("URI: ");
   message += server.uri();
   message += F("\nMethod: ");
@@ -145,45 +147,51 @@ void handleNotFound()
   message += F("\nArguments: ");
   message += server.args();
   message += F("\n");
-  
+
   for (uint8_t i = 0; i < server.args(); i++)
   {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
-  
+
   server.send(404, F("text/plain"), message);
 }
 
 void setup(void)
 {
   Serial.begin(115200);
+
   while (!Serial);
 
-  Serial.print(F("\nStarting SimpleAuthentication on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting SimpleAuthentication on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
 
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
 
   String fv = WiFi.firmwareVersion();
 
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
+  Serial.print("Current Firmware Version = ");
+  Serial.println(fv);
+
+  if (fv != LATEST_RTL8720_FIRMWARE)
   {
     Serial.println("Please upgrade the firmware");
   }
-  
+
   // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
+  while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+
     // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
     status = WiFi.begin(ssid, pass);
 

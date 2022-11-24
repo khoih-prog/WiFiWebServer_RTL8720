@@ -23,9 +23,9 @@
 #include <stdio.h>
 
 #ifdef DEBUG_WIFI_WEBSERVER_PORT
-#define WS_DEBUG_OUTPUT DEBUG_WIFI_WEBSERVER_PORT
+  #define WS_DEBUG_OUTPUT DEBUG_WIFI_WEBSERVER_PORT
 #else
-#define WS_DEBUG_OUTPUT Serial
+  #define WS_DEBUG_OUTPUT Serial
 #endif
 
 // Change _WIFI_LOGLEVEL_ to set tracing and logging verbosity
@@ -36,7 +36,7 @@
 // 4: DEBUG: errors, warnings, informational and debug
 
 #ifndef _WIFI_LOGLEVEL_
-#define _WIFI_LOGLEVEL_       0
+  #define _WIFI_LOGLEVEL_       0
 #endif
 
 ///////////////////////////////////////

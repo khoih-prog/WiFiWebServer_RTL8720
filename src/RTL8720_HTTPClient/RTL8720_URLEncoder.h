@@ -17,7 +17,7 @@
   1.1.1   K Hoang      26/12/2021 Fix authenticate issue caused by libb64
   1.1.2   K Hoang      27/04/2022 Change from `arduino.cc` to `arduino.tips` in examples
  *****************************************************************************************************************************/
- 
+
 // Library to simplify HTTP fetching on Arduino
 // (c) Copyright Arduino. 2019
 // Released under Apache License, version 2.0

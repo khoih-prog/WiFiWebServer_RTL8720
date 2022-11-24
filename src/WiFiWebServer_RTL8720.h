@@ -65,37 +65,37 @@
 
 //////
 
-enum HTTPMethod 
-{ 
-  HTTP_ANY, 
+enum HTTPMethod
+{
+  HTTP_ANY,
   HTTP_GET,
   HTTP_HEAD,
-  HTTP_POST, 
-  HTTP_PUT, 
-  HTTP_PATCH, 
-  HTTP_DELETE, 
-  HTTP_OPTIONS 
+  HTTP_POST,
+  HTTP_PUT,
+  HTTP_PATCH,
+  HTTP_DELETE,
+  HTTP_OPTIONS
 };
 
-enum HTTPUploadStatus 
-{ 
-  UPLOAD_FILE_START, 
-  UPLOAD_FILE_WRITE, 
+enum HTTPUploadStatus
+{
+  UPLOAD_FILE_START,
+  UPLOAD_FILE_WRITE,
   UPLOAD_FILE_END,
   UPLOAD_FILE_ABORTED
 };
 
-enum HTTPClientStatus 
-{ 
-  HC_NONE, 
-  HC_WAIT_READ, 
-  HC_WAIT_CLOSE 
+enum HTTPClientStatus
+{
+  HC_NONE,
+  HC_WAIT_READ,
+  HC_WAIT_CLOSE
 };
 
-enum HTTPAuthMethod 
-{ 
-  BASIC_AUTH, 
-  DIGEST_AUTH 
+enum HTTPAuthMethod
+{
+  BASIC_AUTH,
+  DIGEST_AUTH
 };
 
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
@@ -122,7 +122,7 @@ enum HTTPAuthMethod
 
 class WiFiWebServer;
 
-typedef struct 
+typedef struct
 {
   HTTPUploadStatus status;
   String  filename;
@@ -162,38 +162,38 @@ class WiFiWebServer
     void onNotFound(THandlerFunction fn);   //called when handler is not assigned
     void onFileUpload(THandlerFunction fn); //handle file uploads
 
-    String uri() 
+    String uri()
     {
       return _currentUri;
     }
-    
-    HTTPMethod method() 
+
+    HTTPMethod method()
     {
       return _currentMethod;
     }
-    
-    WiFiClient client() 
+
+    WiFiClient client()
     {
       return _currentClient;
     }
-    
+
     //KH
-    #if USE_NEW_WEBSERVER_VERSION
-    HTTPUpload& upload() 
+#if USE_NEW_WEBSERVER_VERSION
+    HTTPUpload& upload()
     {
       return *_currentUpload;
     }
-    #else
-    HTTPUpload& upload() 
+#else
+    HTTPUpload& upload()
     {
       return _currentUpload;
     }
-    #endif
-    
+#endif
+
     String arg(const String& name);        // get request argument value by name
     String arg(int i);              // get request argument value by number
     String argName(int i);          // get request argument name by number
-    
+
     int args();                     // get arguments count
     bool hasArg(const String& name);       // check if argument exists
     void collectHeaders(const char* headerKeys[], const size_t headerKeysCount); // set the request headers to collect
@@ -214,7 +214,7 @@ class WiFiWebServer
     void send(int code, const String& content_type, const String& content);
     //KH
     void send(int code, char*  content_type, const String& content, size_t contentLength);
-    
+
     void setContentLength(size_t contentLength);
     void sendHeader(const String& name, const String& value, bool first = false);
     void sendContent(const String& content);
@@ -222,16 +222,17 @@ class WiFiWebServer
 
     static String urlDecode(const String& text);
 
-    template<typename T> size_t streamFile(T &file, const String& contentType) 
+    template<typename T> size_t streamFile(T &file, const String& contentType)
     {
       using namespace mime;
       setContentLength(file.size());
-      
-      if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType && contentType != mimeTable[none].mimeType) 
+
+      if (String(file.name()).endsWith(mimeTable[gz].endsWith) && contentType != mimeTable[gz].mimeType
+          && contentType != mimeTable[none].mimeType)
       {
         sendHeader("Content-Encoding", "gzip");
       }
-      
+
       send(200, contentType, "");
       return _currentClient.write(file);
     }
@@ -241,25 +242,26 @@ class WiFiWebServer
     void _handleRequest();
     void _finalizeResponse();
     bool _parseRequest(WiFiClient& client);
-    
+
     //KH
-    #if USE_NEW_WEBSERVER_VERSION
+#if USE_NEW_WEBSERVER_VERSION
     void _parseArguments(const String& data);
-    int  _parseArgumentsPrivate(const String& data, vl::Func<void(String&,String&,const String&,int,int,int,int)> handler);
+    int  _parseArgumentsPrivate(const String& data,
+                                vl::Func<void(String&, String&, const String&, int, int, int, int)> handler);
     bool _parseForm(WiFiClient& client, const String& boundary, uint32_t len);
-    #else
-    void _parseArguments(const String& data);    
+#else
+    void _parseArguments(const String& data);
     bool _parseForm(WiFiClient& client, const String& boundary, uint32_t len);
-    #endif
-    
+#endif
+
     static String _responseCodeToString(int code);
     bool _parseFormUploadAborted();
     void _uploadWriteByte(uint8_t b);
     uint8_t _uploadReadByte(WiFiClient& client);
     void _prepareHeader(String& response, int code, const char* content_type, size_t contentLength);
     bool _collectHeader(const char* headerName, const char* headerValue);
-    
-    struct RequestArgument 
+
+    struct RequestArgument
     {
       String key;
       String value;
@@ -284,15 +286,15 @@ class WiFiWebServer
     RequestArgument*  _currentArgs      = nullptr;
 
     //KH = nullptr
-    #if USE_NEW_WEBSERVER_VERSION
+#if USE_NEW_WEBSERVER_VERSION
     HTTPUpload*       _currentUpload    = nullptr;
     int               _postArgsLen;
     RequestArgument*  _postArgs         = nullptr;
-    
-    #else
+
+#else
     HTTPUpload        _currentUpload;
-    #endif
-    
+#endif
+
     int               _headerKeysCount;
     RequestArgument*  _currentHeaders   = nullptr;
     size_t            _contentLength;

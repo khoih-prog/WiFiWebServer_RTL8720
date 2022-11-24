@@ -1,4 +1,4 @@
-## WiFiWebServer_RTL8720
+## WiFiWebServer_RTL8720 Library
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer_RTL8720.svg?)](https://www.ardu-badge.com/WiFiWebServer_RTL8720)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/WiFiWebServer_RTL8720.svg)](https://github.com/khoih-prog/WiFiWebServer_RTL8720/releases)
@@ -6,8 +6,11 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiWebServer_RTL8720.svg)](http://github.com/khoih-prog/WiFiWebServer_RTL8720/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-WiFiWebServer_RTL8720/count.svg" title="WiFiWebServer_RTL8720 Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-WiFiWebServer_RTL8720/count.svg" style="height: 30px;width: 200px;"></a>
 
 
 ---
@@ -24,6 +27,8 @@
   * [Use Arduino Library Manager](#use-arduino-library-manager)
   * [Manual Install](#manual-install)
   * [VS Code & PlatformIO](#vs-code--platformio)
+* [Packages' Patches](#packages-patches)
+  * [1. For RTL8720DN boards using AmebaD core](#1-for-rtl8720dn-boards-using-amebad-core)
 * [Usage](#usage) 
   * [Class Constructor](#class-constructor) 
   * [Basic Operations](#basic-operations) 
@@ -126,10 +131,11 @@ This [**WiFiWebServer_RTL8720 library**](https://github.com/khoih-prog/WiFiWebSe
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`Arduino AmebaD core 3.1.2+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
+ 2. [`Arduino AmebaD core 3.1.4+`](https://github.com/ambiot/ambd_arduino) for Realtek RTL8720DN, RTL8722DM and RTL8722CSM. [![GitHub release](https://img.shields.io/github/release/ambiot/ambd_arduino.svg)](https://github.com/ambiot/ambd_arduino/releases/latest)
  3. [`Functional-Vlpp library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 
 
+---
 ---
 
 ## Installation
@@ -151,6 +157,26 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
 3. Install [**WiFiWebServer_RTL8720** library](https://platformio.org/lib/show/12562/WiFiWebServer_RTL8720) by using [Library Manager](https://platformio.org/lib/show/12562/WiFiWebServer_RTL8720/installation). Search for **WiFiWebServer_RTL8720** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
+
+
+---
+---
+
+### Packages' Patches
+
+#### 1. For RTL8720DN boards using AmebaD core
+ 
+ To avoid compile error relating to PROGMEM, you have to copy the file [Realtek AmebaD core pgmspace.h](Packages_Patches/realtek/hardware/AmebaD/3.1.4/cores/ambd/avr/pgmspace.h) into Realtek AmebaD directory (~/.arduino15/packages/realtek/hardware/AmebaD/3.1.4/cores/ambd/avr/pgmspace.h). 
+
+Supposing the Realtek AmebaD core version is 3.1.4. This file must be copied into the directory:
+
+- `~/.arduino15/packages/realtek/hardware/AmebaD/3.1.4/cores/ambd/avr/pgmspace.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/realtek/hardware/AmebaD/x.yy.zz/cores/ambd/avr/pgmspace.h`
+
 
 ---
 ---
@@ -380,10 +406,10 @@ https://github.com/khoih-prog/WiFiWebServer_RTL8720/blob/74723f4d6f07671dc33d9d6
 The following are debug terminal output and screen shot when running example [**AdvancedWebServer**](examples/AdvancedWebServer) on **Rtlduino RTL8720DN**
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/WiFiWebServer_RTL8720/blob/main/pics/AdvancedWebServer.png">
+    <img src="https://github.com/khoih-prog/WiFiWebServer_RTL8720/raw/main/pics//AdvancedWebServer.png">
 </p>
 
-```
+```cpp
 Starting AdvancedServer on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 interface 0 is initialized
@@ -429,7 +455,7 @@ A client connected to this server :
 The following are debug terminal output and screen shot when running example [**WebClient**](examples/WebClient) on **Rtlduino RTL8720DN**
 
 
-```
+```cpp
 Starting WebClientRepeating on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 interface 0 is initialized
@@ -521,7 +547,7 @@ alt-svc: h3=":443"; ma=86400, h3-29=":443"; ma=86400
 
 The following are debug terminal output and screen shot when running example [**ScanNetworks**](examples/ScanNetworks) on **Rtlduino RTL8720DN**
 
-```
+```cpp
 Starting ScanNetworks on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
@@ -551,7 +577,7 @@ Number of available networks:19
 The following are debug terminal output and screen shot when running example [**MQTTClient_Auth**](examples/MQTTClient_Auth) on **Rtlduino RTL8720DN**
 
 
-```
+```cpp
 Starting MQTTClient_Auth on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
@@ -571,7 +597,7 @@ Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on Rtlduino RTL8720DN with
 The following are debug terminal output and screen shot when running example [**MQTT_ThingStream**](examples/MQTT_ThingStream) on **Rtlduino RTL8720DN**
 
 
-```
+```cpp
 Start MQTT_ThingStream on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
@@ -601,7 +627,7 @@ MQTT Message receive [STM32_Pub] Hello from MQTT_ThingStream on Rtlduino RTL8720
 The following are debug terminal output and screen shot when running example [**WiFiUdpNTPClient**](examples/WiFiUdpNTPClient) on **Rtlduino RTL8720DN**
 
 
-```
+```cpp
 Starting WiFiUdpNTPClient on Rtlduino RTL8720DN with RTL8720DN
 WiFiWebServer_RTL8720 v1.1.2
 Current Firmware Version = 1.0.0
@@ -685,6 +711,7 @@ Submit issues to: [WiFiWebServer_RTL8720 issues](https://github.com/khoih-prog/W
  3. Fix bug related to usage of Arduino String
  4. Optimize library code and examples by using **reference-passing instead of value-passing**.
  5. Change from `arduino.cc` to `arduino.tips` in examples
+ 6. Add astyle using `allman` style. Restyle the library
 
 
 ---
@@ -722,6 +749,6 @@ If you want to contribute to this project:
 
 ## Copyright
 
-Copyright 2021- Khoi Hoang
+Copyright (c) 2021- Khoi Hoang
 
 

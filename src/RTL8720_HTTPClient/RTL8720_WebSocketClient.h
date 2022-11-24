@@ -17,7 +17,7 @@
   1.1.1   K Hoang      26/12/2021 Fix authenticate issue caused by libb64
   1.1.2   K Hoang      27/04/2022 Change from `arduino.cc` to `arduino.tips` in examples
  *****************************************************************************************************************************/
- 
+
 // (c) Copyright Arduino. 2016
 // Released under Apache License, version 2.0
 
@@ -95,7 +95,7 @@ class WiFiWebSocketClient : public WiFiHttpClient
     // Inherited from Print
     virtual size_t write(uint8_t aByte);
     virtual size_t write(const uint8_t *aBuffer, size_t aSize);
-    
+
     // Inherited from Stream
     virtual int   available();
     /** Read the next byte from the server.

@@ -55,33 +55,39 @@ void printWifiStatus()
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
-  Serial.print(F("\nStarting HueBlink on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting HueBlink on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
 
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
 
   String fv = WiFi.firmwareVersion();
 
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
+  Serial.print("Current Firmware Version = ");
+  Serial.println(fv);
+
+  if (fv != LATEST_RTL8720_FIRMWARE)
   {
     Serial.println("Please upgrade the firmware");
   }
-  
+
   // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
+  while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+
     // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
     status = WiFi.begin(ssid, pass);
 
@@ -93,7 +99,7 @@ void setup()
   printWifiStatus();
 }
 
-void sendRequest(int light, String cmd, String value) 
+void sendRequest(int light, String cmd, String value)
 {
   // make a String for the HTTP request path:
   String request = "/api/" + hueUserName;
@@ -108,7 +114,7 @@ void sendRequest(int light, String cmd, String value)
   hueCmd += "\":";
   hueCmd += value;
   hueCmd += "}";
-  
+
   // see what you assembled to send:
   Serial.print("PUT request to server: ");
   Serial.println(request);

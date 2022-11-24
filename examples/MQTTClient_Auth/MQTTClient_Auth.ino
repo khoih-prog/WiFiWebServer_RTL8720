@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
   MQTTClient_Auth.ino - Dead simple MQTT Client
-  
+
   For RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields
 
   WiFiWebServer_RTL8720 is a library for the RTL8720DN, RTL8722DM and RTL8722CSM WiFi shields to run WebServer
@@ -39,17 +39,17 @@ const char *subTopic  = "MQTT_Sub";               // Topic to subcribe to
 
 //IPAddress mqttServer(172, 16, 0, 2);
 
-void callback(char* topic, byte* payload, unsigned int length) 
+void callback(char* topic, byte* payload, unsigned int length)
 {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  
-  for (unsigned int i = 0; i < length; i++) 
+
+  for (unsigned int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
   }
-  
+
   Serial.println();
 }
 
@@ -59,7 +59,7 @@ PubSubClient    client(mqttServer, 1883, callback, wifiClient);
 void reconnect()
 {
   static String data = "Hello from MQTTClient_Auth on " + String(BOARD_NAME);
-  
+
   // Loop until we're reconnected
   while (!client.connected())
   {
@@ -70,14 +70,14 @@ void reconnect()
     if (client.connect("arduino", "try", "try"))
     {
       Serial.println("...connected");
-      
+
       // Once connected, publish an announcement...
       client.publish(TOPIC, data.c_str());
 
       //Serial.println("Published connection message successfully!");
       //Serial.print("Subcribed to: ");
       //Serial.println(subTopic);
-      
+
       // ... and resubscribe
       client.subscribe(subTopic);
       // for loopback testing
@@ -99,33 +99,39 @@ void setup()
 {
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
+
   while (!Serial);
 
-  Serial.print(F("\nStarting MQTTClient_Auth on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting MQTTClient_Auth on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(WIFI_WEBSERVER_RTL8720_VERSION);
 
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
 
   String fv = WiFi.firmwareVersion();
 
-  Serial.print("Current Firmware Version = "); Serial.println(fv);
-  
-  if (fv != LATEST_RTL8720_FIRMWARE) 
+  Serial.print("Current Firmware Version = ");
+  Serial.println(fv);
+
+  if (fv != LATEST_RTL8720_FIRMWARE)
   {
     Serial.println("Please upgrade the firmware");
   }
-  
+
   // attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) 
+  while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: "); Serial.println(ssid);
-    
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+
     // Connect to WPA/WPA2 network. 2.4G and 5G are all OK
     status = WiFi.begin(ssid, pass);
 
@@ -135,7 +141,7 @@ void setup()
 
   Serial.print(F("Connected! IP address: "));
   Serial.println(WiFi.localIP());
-  
+
   // Note - the default maximum packet size is 128 bytes. If the
   // combined length of clientId, username and password exceed this use the
   // following to increase the buffer size:
@@ -149,18 +155,18 @@ const char *pubData = data.c_str();
 
 unsigned long lastMsg = 0;
 
-void loop() 
+void loop()
 {
   static unsigned long now;
-  
-  if (!client.connected()) 
+
+  if (!client.connected())
   {
     reconnect();
   }
 
   // Sending Data
   now = millis();
-  
+
   if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
   {
     lastMsg = now;
@@ -170,9 +176,11 @@ void loop()
       Serial.println("Message failed to send.");
     }
 
-    Serial.print("Message Send : "); Serial.print(TOPIC);
-    Serial.print(" => "); Serial.println(data);
+    Serial.print("Message Send : ");
+    Serial.print(TOPIC);
+    Serial.print(" => ");
+    Serial.println(data);
   }
-  
+
   client.loop();
 }

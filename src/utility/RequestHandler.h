@@ -35,14 +35,14 @@ class RequestHandler
     {
       WFW_UNUSED(method);
       WFW_UNUSED(uri);
-      
+
       return false;
     }
 
     virtual bool canUpload(const String& uri)
     {
       WFW_UNUSED(uri);
-      
+
       return false;
     }
 
@@ -51,11 +51,11 @@ class RequestHandler
       WFW_UNUSED(server);
       WFW_UNUSED(requestMethod);
       WFW_UNUSED(requestUri);
-      
+
       return false;
     }
 
-    virtual void upload(WiFiWebServer& server, const String& requestUri, const HTTPUpload& upload) 
+    virtual void upload(WiFiWebServer& server, const String& requestUri, const HTTPUpload& upload)
     {
       WFW_UNUSED(server);
       WFW_UNUSED(requestUri);
